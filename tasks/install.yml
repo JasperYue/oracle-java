@@ -1,0 +1,30 @@
+---
+- name: create installation dir if not exists
+  file:
+    path: "{{ java_install_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
+- name: copy jdk package to remote and unpackage it
+  unarchive:
+    src: "{{ playbook_dir }}/files/{{ jdk_tarball_file }}.tar.gz"
+    dest: "{{ java_install_dir }}"
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
+- block:
+    - name: export JAVA_HOME
+      template:
+        src:  ../templates/java_home.sh.j2
+        dest: /etc/profile.d/java_home.sh
+        mode: "a+x"
+
+    - name: source java env config
+      shell: source /etc/profile.d/java_home.sh
+      args:
+        executable: /bin/bash
+
+  when: set_as_default

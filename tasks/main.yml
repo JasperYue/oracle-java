@@ -1,0 +1,42 @@
+---
+# as far as i know, centos6.5 can not work for this reason
+- name: install libselinux-python binary for Ansible to work
+  yum:
+    name: libselinux-python
+    state: present
+  when: ansible_pkg_mgr == "yum"
+
+- name: check if operating system is suported
+  fail:
+    msg: "The operating system ({{ ansible_os_family }}) of the target machine ({{ inventory_hostname }}) is not currently supported."
+  when:
+    - ansible_os_family | lower != 'redhat'
+#    - ansible_os_family | lower != 'debian'
+
+- import_tasks: set_java_info.yml
+
+- name: find local jdk package
+  stat:
+    path: "{{ playbook_dir }}/files/{{ jdk_tarball_file }}.tar.gz"
+  register: filecheck
+  connection: local
+
+- name: check if local jdk package exists
+  fail:
+    msg: "ERROR - required {{ jdk_tarball_file }}.tar.gz, but not exists in {{ playbook_dir }}/files/"
+  when:
+    - filecheck
+    - not filecheck.stat.exists
+
+- name: check if specific version of Oracle JDK is installed?
+  import_tasks: check_environment.yml
+
+- name: exit for specific version jdk is installed
+  fail:
+    msg: "specific oracle jdk version {{ jdk_version }} has been installed on the target host"
+  when: (jdk_info.stdout|from_json).found
+
+- import_tasks: install.yml
+
+- name: check if specific version of Oracle JDK is installed?
+  import_tasks: check_environment.yml

@@ -1,0 +1,13 @@
+---
+# file: oracle-java/tasks/debug.yml
+#
+# Task that prints variable debug information.
+#
+
+- debug:
+    var="{{ item }}"
+  when: item is defined
+  with_items:
+    - jdk_tarball_file
+    - java_home
+    - jdk_info

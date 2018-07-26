@@ -1,0 +1,13 @@
+---
+#
+# task to check if specific version jdk is installed
+#
+- name: check if specific version of Oracle JDK is installed?
+  script: ../files/check_java_version.sh  {{ jdk_version }}
+  register: jdk_info
+  changed_when: false
+  failed_when: jdk_info.rc > 0
+
+- include: debug.yml
+  when: debug | default(false)
+  tags: debug

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+export JAVA_HOME={{ java_home }}
+export PATH=$JAVA_HOME/bin:$PATH
+export CLASSPATH=.:$JAVA_HOME/jre/lib{% if java_package == 'jdk' %}:$JAVA_HOME/lib{% endif %}

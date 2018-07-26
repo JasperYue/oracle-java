@@ -1,0 +1,17 @@
+galaxy_info:
+  author: jasper yue
+  description: Oracle JDK 7/8/9/10 for Centos, Only support java package provided by user
+  license: Apache
+  min_ansible_version: 2.0
+  platforms:
+  - name: CentOS
+    versions:
+    - all
+    - any
+    - 7
+    - 6
+  galaxy_tags:
+    - java
+    - jdk
+    - jre
+    - development

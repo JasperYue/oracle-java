@@ -1,0 +1,61 @@
+---
+# According to the following guidance, tarball file will be unarchive to folder like jdk1.8.0_171 in java8 and jdk-10.0.2 in java10
+# https://docs.oracle.com/javase/8/docs/technotes/guides/install/linux_jdk.html
+# https://docs.oracle.com/javase/10/install/installation-jdk-and-jre-linux-platforms.htm
+# version number format rule after jdk9
+# https://docs.oracle.com/javase/10/install/version-string-format.htm
+
+- name: set jdk_version for java 8
+  set_fact:
+    jdk_version: "1.{{ java_version }}.0_{{ java_subversion }}"
+  when: java_version <= 8
+
+- name: set jdk_version for the java version after java 8
+  set_fact:
+    jdk_version: "{{ java_version }}.{{ java_subversion }}"
+  when: java_version >= 9
+
+# architecture
+- name: set java architecture
+  set_fact:
+    jdk_arch: "{{ 'i586'  if ansible_architecture == 'i386' else 'x64' }}"
+
+# os
+- name: set java OS for Linux
+  set_fact:
+    jdk_os: linux
+
+# concat java8 tarball file name
+- name: compose filename, if necessary
+  set_fact:
+    jdk_tarball_file: "{{ java_package }}-{{ java_version }}u{{ java_subversion }}-{{ jdk_os }}-{{ jdk_arch }}"
+  when: java_version <= 8 and (java_package == 'jre' or java_package == 'jdk')
+
+- name: compose filename, if necessary
+  set_fact:
+    jdk_tarball_file: "server-jre-{{ java_version }}u{{ java_subversion }}-{{ jdk_os }}-{{ jdk_arch }}"
+  when: java_version <= 8 and java_package == 'serverjre'
+
+# concat java10 and later tarball file name
+- name: compose filename, if necessary
+  set_fact:
+    jdk_tarball_file: "{{ java_package }}-{{ java_version }}.{{ java_subversion }}_{{ jdk_os }}-{{ jdk_arch }}_bin"
+  when: java_version >= 9
+
+- name: set jdk_dir for java 8
+  set_fact:
+    jdk_dir: "{{ 'jdk' if java_package != 'jre' else 'jre' }}{{ jdk_version }}"
+  when: java_version <= 8
+
+- name: set jdk_dir for the java version after java 8
+  set_fact:
+    jdk_dir: "{{ 'jdk-' if java_package != 'jre' else 'jre-' }}{{ jdk_version }}"
+  when: java_version >= 9
+
+- name: set java home
+  set_fact:
+    java_home: "{{ java_install_dir }}/{{ jdk_dir }}"
+
+- include: debug.yml
+  when: debug | default(false)
+  tags: debug

@@ -1,0 +1,24 @@
+---
+# defaults file for java
+
+# Absolute path JDK will be install to.
+java_install_dir: "/opt"
+
+# Which kind java you want to install, available list as follow:
+# jdk: For Java Developers. Includes a complete JRE plus tools for developing, debugging, and monitoring Java applications.
+# serverjre: For deploying Java applications on servers. Includes tools for JVM monitoring and tools commonly required for server applications, but does not include browser integration (the Java plug-in), auto-update, nor an installer.
+# jre: Covers most end-users needs. Contains everything required to run Java applications on your system.
+java_package: jdk
+
+# In this case, java_version will be 8 and java_subversion will be 171
+# jdk-8u171-linux-x64.tar.gz -> jdk-{{ java_version }}u{{ java_subversion }}-linux-x64.tar.gz
+# In this case, java_version will be 10 and java_subversion will be 0.2
+# jdk-10.0.2_linux-x64_bin.tar.gz -> jdk-{{ java_version }}.{{ java_subversion }}_linux-x64_bin.tar.gz
+# Java primary version
+java_version: 8
+
+# Java sub version
+java_subversion: 181
+
+# Set as default if java has already installed
+set_as_default: True
